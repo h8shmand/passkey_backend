@@ -25,4 +25,33 @@ const pool = new Pool({
   }
 })();
 
+(async () => {
+  const client = await pool.connect();
+  try {
+    // جدول users (قبلاً ساخته شده)
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        public_key TEXT NOT NULL
+      );
+    `);
+
+    // جدول challenges جدید
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS challenges (
+        id TEXT NOT NULL,
+        challenge TEXT NOT NULL,
+        authenticated BOOLEAN DEFAULT false,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    console.log("✅ جداول آماده هستند");
+  } catch (err) {
+    console.error("❌ خطا در ایجاد جدول:", err);
+  } finally {
+    client.release();
+  }
+})();
+
 module.exports = pool;

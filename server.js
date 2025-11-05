@@ -55,3 +55,32 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 سرور در حال اجرا روی پورت ${PORT}`);
 });
+
+const crypto = require("crypto");
+
+// API ایجاد challenge
+app.post("/api/login-request", async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "id الزامی است" });
+  }
+
+  try {
+    // تولید رشته منحصربه‌فرد
+    const randomString = crypto.randomBytes(8).toString("hex");
+    const challenge = `${id}-${Date.now()}-${randomString}`;
+
+    // ذخیره در دیتابیس
+    await pool.query(
+      "INSERT INTO challenges (id, challenge, authenticated) VALUES ($1, $2, $3)",
+      [id, challenge, false]
+    );
+
+    // فقط id و challenge را برگردان
+    res.json({ id, challenge });
+  } catch (err) {
+    console.error("خطا در تولید challenge:", err);
+    res.status(500).json({ error: "خطا در تولید challenge" });
+  }
+});
