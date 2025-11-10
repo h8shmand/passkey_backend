@@ -171,3 +171,43 @@ app.post("/api/verify-assertion", async (req, res) => {
 
   res.json({ success: true });
 });
+// POST /api/register-challenge
+app.post("/api/register-challenge", async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) return res.status(400).json({ error: "id لازم است" });
+
+  // تولید challenge
+  const challenge = crypto.randomBytes(32).toString("base64url");
+
+  // در دیتابیس ذخیره کن تا بعداً برای verify استفاده شود (اختیاری)
+  await pool.query(
+    "INSERT INTO challenges (id, challenge, authenticated) VALUES ($1, $2, $3)",
+    [id, challenge, false]
+  );
+
+  // بازگشت ساختار مورد نیاز برای WebAuthn registration
+  res.json({
+    publicKey: {
+      challenge,
+      rp: {
+        name: "Passkey Demo",
+        id: "passkey-backend-xht7.onrender.com", // باید با دامنه backend یکی باشد
+      },
+      user: {
+        id: Buffer.from(id).toString("base64url"), // در WebAuthn باید ArrayBuffer باشد
+        name: id,
+        displayName: id,
+      },
+      pubKeyCredParams: [
+        { type: "public-key", alg: -257 }, // RSA256
+      ],
+      authenticatorSelection: {
+        authenticatorAttachment: "platform", // ذخیره در secure element
+        userVerification: "preferred",
+      },
+      timeout: 60000,
+      attestation: "direct", // یا "none"
+    },
+  });
+});
