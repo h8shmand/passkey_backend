@@ -1,15 +1,15 @@
-// // server.js
-// const express = require("express");
-// const bodyParser = require("body-parser");
-// const cors = require("cors");
-// const pool = require("./database");
-// const crypto = require("crypto");
-// const base64url = require("base64url");
-// const pool = require("./database"); // فرض: pool از database.js export میشه
+// server.js
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const pool = require("./database");
+const crypto = require("crypto");
+const base64url = require("base64url");
+const pool = require("./database"); // فرض: pool از database.js export میشه
 
-// const app = express();
-// app.use(cors());
-// app.use(bodyParser.json());
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
 
 // app.post("/api/save-key", async (req, res) => {
 //   const { id, public_key } = req.body;
