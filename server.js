@@ -5,7 +5,7 @@ const cors = require("cors");
 const pool = require("./database");
 const crypto = require("crypto");
 const base64url = require("base64url");
-const pool = require("./database"); // فرض: pool از database.js export میشه
+// const pool = require("./database"); // فرض: pool از database.js export میشه
 
 const app = express();
 app.use(cors());
