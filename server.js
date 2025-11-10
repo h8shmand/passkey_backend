@@ -161,11 +161,9 @@ app.post("/api/verify-assertion", async (req, res) => {
       [id]
     );
     if (chalRes.rows.length === 0)
-      return res
-        .status(400)
-        .json({
-          error: "هیچ challenge در حالت pending برای این کاربر وجود ندارد",
-        });
+      return res.status(400).json({
+        error: "هیچ challenge در حالت pending برای این کاربر وجود ندارد",
+      });
     const storedChallenge = chalRes.rows[0].challenge;
 
     // 3) decode clientDataJSON و مقایسه challenge
@@ -260,7 +258,7 @@ app.post("/api/register-challenge", async (req, res) => {
         challenge,
         rp: {
           name: "Passkey Demo",
-          id: "passkey-backend-xht7.onrender.com",
+          id: "passkey-v2.netlify.app",
         },
         user: {
           id: base64url.encode(Buffer.from(id)),
