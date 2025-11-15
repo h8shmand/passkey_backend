@@ -265,7 +265,10 @@ app.post("/api/register-challenge", async (req, res) => {
           name: id,
           displayName: id,
         },
-        pubKeyCredParams: [{ type: "public-key", alg: -257 }],
+        pubKeyCredParams: [
+          { type: "public-key", alg: -257 },
+          { type: "public-key", alg: -7 },
+        ],
         authenticatorSelection: {
           authenticatorAttachment: "platform",
           userVerification: "preferred",
